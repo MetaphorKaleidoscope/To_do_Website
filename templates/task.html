@@ -1,0 +1,62 @@
+{% include "header.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+  <!-- Page Header -->
+  <header class="masthead"  style="background: #241468">
+    <div class="overlay"></div>
+          <div class="site-heading">
+          </div>
+  </header>
+
+  <!-- Task Content -->
+  <article>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {% if task.priority == 'low' %}
+            <h1>{{task.name}}</h1>
+            <h2 style="color:#8CABFF">{{task.priority}}</h2>
+            {% elif task.priority == 'medium' %}
+            <h1>{{task.name}}</h1>
+            <h2 style="color:#4477CE">{{task.priority}}</h2>
+            {% else %}
+            <h1>{{task.name}}</h1>
+            <h2 style="color:#512B81">{{task.priority}}</h2>
+            {% endif %}
+            <ul class="activities list">
+                {% for each in task.activities.split() %}
+                <li>
+                    <p class="task-activities" >{{each}} </p>
+                </li>
+                {% endfor %}
+            </ul>
+          <hr>
+
+<!--           Note Area -->
+          <div class="col-lg-8 col-md-10 mx-auto comment">
+              <ul class="noteList">
+                  {% if notes: %}
+                    {% for note in notes %}
+                        <li>
+                            <div class="noteText">
+                                <p>{{ note.note|safe }}</p>
+                            </div>
+                        </li>
+                    {% endfor %}
+                  {% endif %}
+              </ul>
+            </div>
+                              {{ ckeditor.load() }}
+                              {{ ckeditor.config(name='note') }}
+                              {{ wtf.quick_form(form, novalidate=True, button_map={"submit": "primary"}) }}
+
+            <div class="clearfix">
+            <a class="btn btn-primary float-right" href="{{url_for('edit_task', task_id=task.id)}}">Edit task</a>
+            </div>
+
+
+          </div>
+      </div>
+    </div>
+  </article>
+  <hr>
+{% include "footer.html" %}

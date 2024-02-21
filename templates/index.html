@@ -1,0 +1,76 @@
+{% include "header.html" %}
+
+  <!-- Page Header -->
+  <header class="masthead" style="background: #241468">
+    <div class="overlay"></div>
+          <div class="site-heading">
+          </div>
+  </header>
+
+  <!-- Main Content -->
+
+{% if current_user.is_authenticated: %}
+  <div class="container">
+      <div class="row">
+          <div class="col">
+              <div class="noteImage">
+                <img src="{{ current_user.email | gravatar }}">
+                  <span class="date-sub-text">{{current_user.name}}</span>
+              </div>
+          </div>
+      </div>
+    <div class="row">
+    {% for stat in status %}
+             <div class="col-sm-4">
+                 <div class="status-title">
+                    <h1>{{stat}}</h1>
+                 </div>
+                {% for task in all_tasks %}
+                 {% if task.author == current_user.name: %}
+                  {% if task.state and task.state == stat: %}
+                    <div class="row">
+                    <div class="task-preview">
+                      <a href="{{ url_for('show_task', task_id=task.id) }}">
+                        <h4 class="task-name">
+                          {{task['name']}}
+                        </h4>
+                        <p class="task-activities">
+            <!--              {{task['activities']}}-->
+                        </p>
+                      </a>
+                        <p class="task-meta"> Priority:
+                        <a href="{{ url_for('show_task', task_id=task.id) }}">{{ task['priority'] }}</a>
+                        </p>
+                      <p class="task-meta">Due date:
+                       <a href="{{ url_for('show_task', task_id=task.id) }}">{{task.due_date.strftime('%Y-%m-%d')}}</a>
+                          {% if date >= task.due_date and task.state == 'Done' %}
+                            <img src="static/img/icons8-marca-de-verificación-500.png" width="20" height="20">
+                          {% else %}
+                            <img src="static/img/bell.png" width="20" height="20">
+                          {% endif %}
+                      </p>
+                      <p class="task-delete">
+                        <a href="{{url_for('delete_task', task_id=task.id) }}">✘</a>
+                      </p>
+                    </div>
+                  </div>
+                 {% endif %}
+                 {% endif %}
+                {% endfor %}
+
+                </div>
+    {% endfor %}
+      </div>
+        <!-- New Task -->
+        <div class="clearfix">
+          <a class="btn btn-primary float-right" href="{{url_for('add_new_task')}}">Add New Task</a>
+        </div>
+
+  </div>
+{% else: %}
+<div class="welcome-title">
+    <h1>Welcome login or register to start!</h1>
+</div>
+{% endif %}
+  <hr>
+{% include "footer.html" %}
